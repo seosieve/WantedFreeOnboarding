@@ -6,70 +6,57 @@
 //
 
 import UIKit
+import Then
+import SnapKit
 
 class ViewController: UIViewController {
-
-    @IBOutlet weak var LoadButton1: UIButton!
-    @IBOutlet weak var LoadButton2: UIButton!
-    @IBOutlet weak var LoadButton3: UIButton!
-    @IBOutlet weak var LoadButton4: UIButton!
-    @IBOutlet weak var LoadButton5: UIButton!
-    @IBOutlet weak var ImageView1: UIImageView!
-    @IBOutlet weak var ImageView2: UIImageView!
-    @IBOutlet weak var ImageView3: UIImageView!
-    @IBOutlet weak var ImageView4: UIImageView!
-    @IBOutlet weak var ImageView5: UIImageView!
-    @IBOutlet weak var LoadAllButton: UIButton!
     
-    @IBAction func LoadButton1Pressed(_ sender: Any) {
-        ImageView1.image = UIImage(systemName: "photo")
-        ImageView1.load(url: URL(string: catURLs[0])!)
+    let tableView = UITableView().then {
+        $0.rowHeight = 100
+//        $0.separatorStyle = .none
     }
     
-    @IBAction func LoadButton2Pressed(_ sender: Any) {
-        ImageView2.image = UIImage(systemName: "photo")
-        ImageView2.load(url: URL(string: catURLs[1])!)
-    }
-    
-    @IBAction func LoadButton3Pressed(_ sender: Any) {
-        ImageView3.image = UIImage(systemName: "photo")
-        ImageView3.load(url: URL(string: catURLs[2])!)
-    }
-    
-    @IBAction func LoadButton4Pressed(_ sender: Any) {
-        ImageView4.image = UIImage(systemName: "photo")
-        ImageView4.load(url: URL(string: catURLs[3])!)
-    }
-    @IBAction func LoadButton5Pressed(_ sender: Any) {
-        ImageView5.image = UIImage(systemName: "photo")
-        ImageView5.load(url: URL(string: catURLs[4])!)
-    }
-    
-    @IBAction func LoadAllButtonPressed(_ sender: Any) {
-        ImageView1.image = UIImage(systemName: "photo")
-        ImageView2.image = UIImage(systemName: "photo")
-        ImageView3.image = UIImage(systemName: "photo")
-        ImageView4.image = UIImage(systemName: "photo")
-        ImageView5.image = UIImage(systemName: "photo")
-        ImageView1.load(url: URL(string: catURLs[0])!)
-        ImageView2.load(url: URL(string: catURLs[1])!)
-        ImageView3.load(url: URL(string: catURLs[2])!)
-        ImageView4.load(url: URL(string: catURLs[3])!)
-        ImageView5.load(url: URL(string: catURLs[4])!)
+    let loadAllButton = UIButton().then {
+        $0.backgroundColor = .systemBlue
+        $0.setTitle("Load All Images", for: .normal)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.cellId)
         setViews()
     }
     
     func setViews() {
-        LoadButton1.rounded(6)
-        LoadButton2.rounded(6)
-        LoadButton3.rounded(6)
-        LoadButton4.rounded(6)
-        LoadButton5.rounded(6)
-        LoadAllButton.rounded(6)
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(500)
+        }
+        
+        view.addSubview(loadAllButton)
+        loadAllButton.rounded(6)
+        loadAllButton.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(30)
+            make.top.equalTo(tableView.snp.bottom).offset(20)
+            make.height.equalTo(40)
+        }
+    }
+}
+
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.cellId, for: indexPath) as! TableViewCell
+        
+        return cell
     }
 }
 
