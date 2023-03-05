@@ -13,12 +13,22 @@ class ViewController: UIViewController {
     
     let tableView = UITableView().then {
         $0.rowHeight = 100
+        $0.isScrollEnabled = false
 //        $0.separatorStyle = .none
     }
     
-    let loadAllButton = UIButton().then {
+    lazy var loadAllButton = UIButton().then {
         $0.backgroundColor = .systemBlue
         $0.setTitle("Load All Images", for: .normal)
+        $0.addTarget(self, action: #selector(loadAllButtonPressed(_:)), for: .touchUpInside)
+    }
+    
+    @objc func loadAllButtonPressed(_ sender: UIButton) {
+        for index in 0..<5 {
+            let cell = tableView.cellForRow(at: [0,index]) as! TableViewCell
+            cell.photoView.image = UIImage(systemName: "photo")
+            cell.photoView.load(url: catURLs[index])
+        }
     }
     
     override func viewDidLoad() {
@@ -55,7 +65,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.cellId, for: indexPath) as! TableViewCell
-        
+        cell.selectionStyle = .none
+        cell.cellIndex = indexPath.row
         return cell
     }
 }
